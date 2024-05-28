@@ -50,7 +50,7 @@ describe("Error handling", () => {
     return request(app)
       .get("/api/notARoute")
       .expect(404)
-      .then(({ body }) => {gi
+      .then(({ body }) => {
         expect(body.msg).toBe("Not found");
       });
   });
