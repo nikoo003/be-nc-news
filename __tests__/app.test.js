@@ -3,6 +3,7 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
+const endpoint = require('../endpoints.json')
 
 afterAll(() => {
   return db.end();
