@@ -3,7 +3,7 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
-const endpoint = require("../endpoints.json");
+const endpoints = require("../endpoints.json");
 
 afterAll(() => {
   return db.end();
@@ -27,6 +27,19 @@ describe("GET api/topics", () => {
         });
       });
   });
+});
+describe("GET /api", () => {
+  test("GET:200 responds with a JSON object describing all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(endpoints);
+      });
+  });
+});
+
+describe("Error handling", () => {
   test("GET:404 responds with an error message when accessing a nonexistent route", () => {
     return request(app)
       .get("/api/notARoute")
