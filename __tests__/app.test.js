@@ -13,12 +13,18 @@ beforeEach(() => {
 });
 
 describe("GET api/topics", () => {
-  test("GET:200 sends an array of topics to the client with the correct array length and structure", () => {
+  test("GET:200 sends an array of topics to the client with the correct array length", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
         expect(body.topics).toHaveLength(3);
+      });
+  });
+  test("Each topic object has correct structure", () => {
+    return request(app)
+      .get("/api/topics")
+      .then(({ body }) => {
         body.topics.forEach((topic) => {
           expect(topic).toMatchObject({
             description: expect.any(String),
@@ -34,7 +40,7 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        expect(response.body).toEqual(endpoints);
+        expect(response.body).toEqual({endpoints});
       });
   });
 });
