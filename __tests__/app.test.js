@@ -45,7 +45,7 @@ describe("GET /api", () => {
   });
 });
 
-describe("Error handling", () => {
+describe("/*", () => {
   test("GET:404 responds with an error message when accessing a nonexistent route", () => {
     return request(app)
       .get("/api/notARoute")
