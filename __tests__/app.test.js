@@ -57,12 +57,20 @@ describe("GET /api/article/:article_id", () => {
         });
       });
   });
-  test("400: responds with an error when article is not found", () => {
+  test("400: responds with an error when article_id is invalid", () => {
     return request(app)
       .get("/api/articles/invalid_id")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: responds with an error when article is not found", () => {
+    return request(app)
+      .get("/api/articles/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
       });
   });
 });
