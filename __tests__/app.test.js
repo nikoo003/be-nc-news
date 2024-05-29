@@ -61,6 +61,7 @@ describe("GET /api/articles", () => {
         expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+
   describe("GET /api/articles/:article_id", () => {
     test("200: sends an object to the client with the correct object structure", () => {
       return request(app)
@@ -78,14 +79,21 @@ describe("GET /api/articles", () => {
           });
         });
     });
-    test("400: responds with an error when article is not found", () => {
-      return request(app)
-        .get("/api/articles/invalid_id")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Bad request");
-        });
-    });
+  test("400: responds with an error when article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalid_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: responds with an error when article is not found", () => {
+    return request(app)
+      .get("/api/articles/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
   });
 });
 
