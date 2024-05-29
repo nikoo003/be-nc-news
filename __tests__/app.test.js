@@ -12,8 +12,8 @@ beforeEach(() => {
   return seed(data);
 });
 
-describe("GET api/topics", () => {
-  test("200: sends an array of topics to the client with the correct array length", () => {
+describe("GET /api/topics", () => {
+  test("200: sends an array of topics to the client with the correct array length and structure", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -28,6 +28,7 @@ describe("GET api/topics", () => {
       });
   });
 });
+
 describe("GET /api", () => {
   test("200: responds with a JSON object describing all available endpoints", () => {
     return request(app)
