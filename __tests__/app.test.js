@@ -40,6 +40,33 @@ describe("GET /api", () => {
   });
 });
 
+describe("GET /api/article/:article_id", () => {
+  test("200: sends an object to the client with the correct object structure", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toMatchObject({
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String)
+        });
+      });
+  });
+  test("400: responds with an error when article is not found", () => {
+    return request(app)
+      .get("/api/articles/invalid_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
 describe("/*", () => {
   test("404: responds with an error message when accessing a nonexistent route", () => {
     return request(app)
