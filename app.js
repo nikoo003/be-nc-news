@@ -6,11 +6,13 @@ const {
   getArticleById,
   getArticles,
 } = require("./controllers/articles.controller");
+const { getCommentsByArticleId } = require("./controllers/comments.controller");
 
 app.get("/api/topics", getAllTopics);
 app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticles);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "Not found" });
@@ -18,7 +20,7 @@ app.all("*", (req, res) => {
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
-    res.status(err.status).send({msg: err.msg});
+    res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
   }

@@ -98,6 +98,43 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: sends an array of comments to the client with the correct structure ordered in date descending order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+        expect(body).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("400: responds with an error when article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/invalid_id/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: responds with an error when comment is not found", () => {
+    return request(app)
+      .get("/api/articles/0/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found");
+      });
+  });
+});
+
 describe("/*", () => {
   test("404: responds with an error message when accessing a nonexistent route", () => {
     return request(app)
