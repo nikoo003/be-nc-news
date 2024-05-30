@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+
 exports.selectCommentsByArticleId = (article_id) => {
   return db
     .query(
@@ -15,4 +16,22 @@ exports.selectCommentsByArticleId = (article_id) => {
         return result.rows;
       }
     });
+};
+
+exports.setComment = (article_id, username, body) => {
+  if (!username || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid data provided for comment",
+    });
+  } else {
+    return db
+      .query(
+        "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING * ;",
+        [article_id, username, body]
+      )
+      .then(({ rows }) => {
+        return rows[0];
+      });
+  }
 };
