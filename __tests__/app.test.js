@@ -66,17 +66,17 @@ describe("GET /api/articles", () => {
 describe("GET /api/articles/:article_id", () => {
   test("200: sends an object to the client with the correct object structure", () => {
     return request(app)
-      .get("/api/articles/3")
+      .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({
-          article_id: 3,
-          title: "Eight pug gifs that remind me of mitch",
+          article_id: 1,
+          title: "Living in the shadow of a great man",
           topic: "mitch",
-          author: "icellusedkars",
-          body: "some gifs",
-          created_at: 1604394720000,
-          votes: 0,
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         });
@@ -119,26 +119,26 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("400: responds with an error when article_id is invalid", () => {
+  test("200: sends an empty array when there are no comments for given article id", () => {
     return request(app)
-      .get("/api/articles/invalid_id/comments")
-      .expect(400)
+      .get("/api/articles/2/comments")
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        expect(body).toEqual([]);
       });
   });
-  test("404: responds with an error when comment is not found", () => {
+  test("404: responds with an error when article_id is valid but non-existing", () => {
     return request(app)
-      .get("/api/articles/0/comments")
+      .get("/api/articles/99999/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Comment not found");
+        expect(body.msg).toBe("Article not found");
       });
   });
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test.only("201: Adds comment for an article", () => {
+  test("201: Adds comment for an article", () => {
     const newComment = {
       username: "butter_bridge",
       body: "Test comment body",
@@ -159,7 +159,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
       });
   });
-  test.only("400: responds with an error when not provided with sufficient data", async () => {
+  test("400: responds with an error when not provided with sufficient data", async () => {
     const newComment = {};
 
     return request(app)
