@@ -135,6 +135,41 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+  test.only("201: Adds comment for an article", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Test comment body",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: "Test comment body",
+          votes: 0,
+          author: "butter_bridge",
+          article_id: 1,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test.only("400: responds with an error when not provided with sufficient data", async () => {
+    const newComment = {};
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe("Invalid data provided for comment")
+      })
+  });
+});
+
 describe("/*", () => {
   test("404: responds with an error message when accessing a nonexistent route", () => {
     return request(app)

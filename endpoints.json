@@ -53,5 +53,23 @@
         "created_at": 1582459260000
       }
     }
+  }, 
+  "POST /api/articles/:article_id/comments": {
+    "description": "Adds a comment for the article corresponding to the given article_id",
+    "queries": [],
+    "requestBody": {
+      "username": "string",
+      "body": "string"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "article_id": 1,
+        "votes": 0,
+        "created_at": "2024-05-30T12:00:00Z",
+        "author": "weegembump",
+        "body": "Great article!"
+      }
+    }
   }
 }
