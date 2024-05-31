@@ -137,6 +137,24 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("200: sends an array of users to the client with the correct array length and structure", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toHaveLength(4);
+        body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
 describe("POST /api/articles/:article_id/comments", () => {
   test("201: Adds comment for an article", () => {
     const newComment = {
@@ -238,9 +256,9 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(body).toEqual({});
       });
   });
-  test.only("404: responds with an error when comment_id is valid but non-existing", () => {
+  test("404: responds with an error when comment_id is valid but non-existing", () => {
     return request(app)
-      .delete("/api/comments/99999") 
+      .delete("/api/comments/99999")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Comment not found");
