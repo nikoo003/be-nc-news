@@ -209,7 +209,7 @@ describe("PATCH /api/articles/:article_id", () => {
 
   test("200: ignores extra properties in the request body", () => {
     const voteCount = { inc_votes: 1, extra_property: "ignored" };
-  
+
     return request(app)
       .patch("/api/articles/3")
       .send(voteCount)
@@ -227,7 +227,18 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
+});
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes the specified comment by comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        console.log(body)
+        expect(body).toEqual({});
+      });
+  });
 });
 
 describe("/*", () => {
