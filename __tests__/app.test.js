@@ -235,8 +235,15 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/1")
       .expect(204)
       .then(({ body }) => {
-        console.log(body)
         expect(body).toEqual({});
+      });
+  });
+  test.only("404: responds with an error when comment_id is valid but non-existing", () => {
+    return request(app)
+      .delete("/api/comments/99999") 
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found");
       });
   });
 });
