@@ -209,7 +209,7 @@ describe("PATCH /api/articles/:article_id", () => {
 
   test("200: ignores extra properties in the request body", () => {
     const voteCount = { inc_votes: 1, extra_property: "ignored" };
-  
+
     return request(app)
       .patch("/api/articles/3")
       .send(voteCount)
@@ -227,7 +227,25 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
+});
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes the specified comment by comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  test.only("404: responds with an error when comment_id is valid but non-existing", () => {
+    return request(app)
+      .delete("/api/comments/99999") 
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found");
+      });
+  });
 });
 
 describe("/*", () => {
