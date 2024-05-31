@@ -172,6 +172,64 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: sends an updated object to the client with the correct object structure and vote number", () => {
+    const voteCount = { inc_votes: 2 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(voteCount)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 102,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+
+  test("200: does not decrement votes below 0", () => {
+    const voteCount = { inc_votes: -199 };
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(voteCount)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(0);
+      });
+  });
+
+  test("200: ignores extra properties in the request body", () => {
+    const voteCount = { inc_votes: 1, extra_property: "ignored" };
+  
+    return request(app)
+      .patch("/api/articles/3")
+      .send(voteCount)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 1,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+
+});
+
 describe("/*", () => {
   test("404: responds with an error message when accessing a nonexistent route", () => {
     return request(app)
