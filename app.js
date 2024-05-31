@@ -5,11 +5,13 @@ const { getApi } = require("./controllers/api.controller");
 const {
   getArticleById,
   getArticles,
+  sendUpdatedArticle,
 } = require("./controllers/articles.controller");
 const {
   getCommentsByArticleId,
   addComment,
 } = require("./controllers/comments.controller");
+
 app.use(express.json());
 
 app.get("/api/topics", getAllTopics);
@@ -18,6 +20,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addComment);
+app.patch("/api/articles/:article_id", sendUpdatedArticle);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "Not found" });
