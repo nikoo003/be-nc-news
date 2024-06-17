@@ -215,6 +215,22 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Invalid username");
       });
   });
+
+  test("404: responds with an error when article does not exist", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Test comment body",
+    };
+
+    return request(app)
+      .post("/api/articles/99999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article_id");
+      });
+  });
+
 });
 
 describe("PATCH /api/articles/:article_id", () => {
