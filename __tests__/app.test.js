@@ -303,6 +303,19 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
+
+  test("400: responds with an error when article_id is invalid", () => {
+    const voteCount = { inc_votes: 1, extra_property: "ignored" };
+
+    return request(app)
+    .patch("/api/articles/NaN")
+    .send(voteCount)
+    .expect(400)
+    .then(({body})=>{
+      expect(body.msg).toBe("Bad request")
+    })
+  })
+
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
