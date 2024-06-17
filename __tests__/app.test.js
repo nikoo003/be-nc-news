@@ -216,7 +216,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("404: responds with an error when article does not exist", () => {
+  test("404: responds with an error when article_id is valid but does not exist", () => {
     const newComment = {
       username: "butter_bridge",
       body: "Test comment body",
@@ -227,7 +227,22 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid article_id");
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+
+  test("400: responds with an error when article is invalid", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Test comment body",
+    };
+
+    return request(app)
+      .post("/api/articles/invalid_article_id/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 

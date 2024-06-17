@@ -22,6 +22,7 @@ exports.selectCommentsByArticleId = (article_id) => {
 };
 
 exports.setComment = (article_id, username, body) => {
+
   return db
     .query("SELECT * FROM users WHERE username = $1", [username])
     .then(({ rows: userRows }) => {
@@ -37,7 +38,7 @@ exports.setComment = (article_id, username, body) => {
             if (rows.length === 0) {
               return Promise.reject({
                 status: 404,
-                msg: "Invalid article_id",
+                msg: "Article not found",
               });
             } else {
               return db
