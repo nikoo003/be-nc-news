@@ -177,15 +177,42 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
       });
   });
-  test("400: responds with an error when not provided with sufficient data", async () => {
-    const newComment = {};
+
+  test("200: Ignores extra properties in the request body", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Test comment body",
+      extraProperty: "should be ignored",
+    };
 
     return request(app)
       .post("/api/articles/1/comments")
       .send(newComment)
-      .expect(400)
+      .expect(201)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid data provided for comment");
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: "Test comment body",
+          votes: 0,
+          author: "butter_bridge",
+          article_id: 1,
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  test("404: responds with an error when username does not exist", () => {
+    const newComment = {
+      username: "invalid-username",
+      body: "Test comment body",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid username");
       });
   });
 });

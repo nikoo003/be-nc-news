@@ -22,21 +22,25 @@ exports.selectCommentsByArticleId = (article_id) => {
 };
 
 exports.setComment = (article_id, username, body) => {
-  if (!username || !body) {
-    return Promise.reject({
-      status: 400,
-      msg: "Invalid data provided for comment",
+  return db
+    .query("SELECT * FROM users WHERE username = $1", [username])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Invalid username",
+        });
+      }else{
+        return db
+        .query(
+          "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING * ;",
+          [article_id, username, body]
+        )
+        .then(({ rows }) => {
+          return rows[0];
+        });
+      }
     });
-  } else {
-    return db
-      .query(
-        "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING * ;",
-        [article_id, username, body]
-      )
-      .then(({ rows }) => {
-        return rows[0];
-      });
-  }
 };
 
 exports.removeComment = (comment_id) => {
