@@ -245,7 +245,6 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-
 });
 
 describe("PATCH /api/articles/:article_id", () => {
@@ -308,13 +307,25 @@ describe("PATCH /api/articles/:article_id", () => {
     const voteCount = { inc_votes: 1, extra_property: "ignored" };
 
     return request(app)
-    .patch("/api/articles/NaN")
-    .send(voteCount)
-    .expect(400)
-    .then(({body})=>{
-      expect(body.msg).toBe("Bad request")
-    })
-  })
+      .patch("/api/articles/NaN")
+      .send(voteCount)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("400: responds with an error when inc_votes value is not a number", () => {
+    const voteCount = { inc_votes: "NaN", extra_property: "ignored" };
+
+    return request(app)
+      .patch("/api/articles/NaN")
+      .send(voteCount)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Vote value is not valid");
+      });
+  });
 
 });
 

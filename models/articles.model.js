@@ -29,6 +29,13 @@ exports.selectArticles = () => {
 };
 
 exports.updateArticle = (article_id, inc_votes) => {
+
+  if(typeof inc_votes !== "number"){
+    return Promise.reject({
+      status:400, 
+      msg: "Vote value is not valid"
+    })
+  }
   return db
     .query(
       `UPDATE articles
